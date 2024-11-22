@@ -2,13 +2,15 @@ from django.db import models
 
 from config.settings import AUTH_USER_MODEL
 
+NULABLE = {'blank': True, 'null': True}
+
 
 class Ad(models.Model):
     """ Модель объявления. """
     title = models.CharField(max_length=150, verbose_name='название товара')
     price = models.IntegerField(default=0, verbose_name='стоимость товара')
     description = models.TextField(verbose_name='описание товара')
-    author = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='автор объявления')
+    author = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='автор объявления', **NULABLE)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='время и дата создания объявления')
 
     def __str__(self):
@@ -23,7 +25,7 @@ class Ad(models.Model):
 class Review(models.Model):
     """ Модель отзыва. """
     text = models.TextField(verbose_name='текст отзыва')
-    author = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='автор отзыва')
+    author = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='автор отзыва', **NULABLE)
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE, verbose_name='объявление')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='время и дата создания отзыва')
 

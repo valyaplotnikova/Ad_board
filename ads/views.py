@@ -1,4 +1,4 @@
-from django_filters import OrderingFilter
+from rest_framework.filters import OrderingFilter
 
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -13,7 +13,8 @@ class AdListAPIView(ListAPIView):
     serializer_class = AdSerializer
     queryset = Ad.objects.all()
     pagination_class = AdPagination
-    filter_backends = [OrderingFilter]
+
+    filter_backends = (OrderingFilter,)
     search_fields = ['title']
     permission_classes = (AllowAny,)
 
@@ -21,7 +22,12 @@ class AdListAPIView(ListAPIView):
 class AdCreateAPIView(CreateAPIView):
     serializer_class = AdSerializer
     queryset = Ad.objects.all()
-    permission_classes = (IsAuthenticated, IsAdmin | IsAuthor)
+    permission_classes = (IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        ad = serializer.save()
+        ad.author = self.request.user
+        ad.save()
 
 
 class AdRetrieveAPIView(RetrieveAPIView):
@@ -51,6 +57,11 @@ class ReviewCreateAPIView(CreateAPIView):
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
     permission_classes = (IsAuthenticated, IsAdmin | IsAuthor)
+
+    def perform_create(self, serializer):
+        review = serializer.save()
+        review.author = self.request.user
+        review.save()
 
 
 class ReviewRetrieveAPIView(RetrieveAPIView):
