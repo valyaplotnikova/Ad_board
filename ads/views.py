@@ -25,15 +25,13 @@ class AdCreateAPIView(CreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
-        ad = serializer.save()
-        ad.author = self.request.user
-        ad.save()
+        serializer.save(author=self.request.user)
 
 
 class AdRetrieveAPIView(RetrieveAPIView):
     serializer_class = AdSerializer
     queryset = Ad.objects.all()
-    permission_classes = (IsAuthenticated, IsAdmin | IsAuthor)
+    permission_classes = (IsAuthenticated,)
 
 
 class AdUpdateAPIView(UpdateAPIView):
@@ -50,24 +48,22 @@ class AdDestroyAPIView(DestroyAPIView):
 class ReviewListAPIView(ListAPIView):
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
-    permission_classes = (IsAuthenticated, IsAdmin | IsAuthor)
+    permission_classes = (AllowAny,)
 
 
 class ReviewCreateAPIView(CreateAPIView):
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
-    permission_classes = (IsAuthenticated, IsAdmin | IsAuthor)
+    permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer):
-        review = serializer.save()
-        review.author = self.request.user
-        review.save()
+        serializer.save(author=self.request.user)
 
 
 class ReviewRetrieveAPIView(RetrieveAPIView):
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
-    permission_classes = (IsAuthenticated, IsAdmin | IsAuthor)
+    permission_classes = (IsAuthenticated,)
 
 
 class ReviewUpdateAPIView(UpdateAPIView):
