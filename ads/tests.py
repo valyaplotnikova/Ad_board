@@ -15,22 +15,41 @@ def api_client():
 
 @pytest.fixture
 def user():
-    return User.objects.create(email='testuser@test.ru', password='testpassword', first_name='test', last_name='testov')
+    return User.objects.create(
+        email='testuser@test.ru',
+        password='testpassword',
+        first_name='test',
+        last_name='testov'
+    )
 
 
 @pytest.fixture
 def admin_user():
-    return User.objects.create(email='adminuser@test.ru', password='adminpassword', first_name='admin', last_name='adminov', is_admin=True)
+    return User.objects.create(
+        email='adminuser@test.ru',
+        password='adminpassword',
+        first_name='admin',
+        last_name='adminov',
+        is_admin=True
+    )
 
 
 @pytest.fixture
 def ad(user):
-    return Ad.objects.create(title='Test Ad', description='Test Description', author=user)
+    return Ad.objects.create(
+        title='Test Ad',
+        description='Test Description',
+        author=user
+    )
 
 
 @pytest.fixture
 def review(user, ad):
-    return Review.objects.create(text='Test Review', ad=ad, author=user)
+    return Review.objects.create(
+        text='Test Review',
+        ad=ad,
+        author=user
+    )
 
 
 @pytest.mark.django_db
@@ -48,6 +67,13 @@ class TestAdAPI:
         response = api_client.post(url, data)
         assert response.status_code == status.HTTP_201_CREATED
         assert Ad.objects.count() == 1
+
+    def test_ad_create_not_authenticate(self, api_client, user):
+        url = reverse('ads:ad_create')
+        data = {'title': 'New Ad', 'description': 'New Description'}
+        response = api_client.post(url, data)
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert Ad.objects.count() == 0
 
     def test_ad_retrieve(self, api_client, user, ad):
         api_client.force_authenticate(user=user)
