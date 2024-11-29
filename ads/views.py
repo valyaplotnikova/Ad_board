@@ -1,4 +1,4 @@
-from rest_framework.filters import OrderingFilter
+from rest_framework.filters import SearchFilter
 
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -14,8 +14,8 @@ class AdListAPIView(ListAPIView):
     queryset = Ad.objects.all()
     pagination_class = AdPagination
 
-    filter_backends = (OrderingFilter,)
-    search_fields = ['title']
+    filter_backends = (SearchFilter,)
+    search_fields = ['title', 'description']
     permission_classes = (AllowAny,)
 
 
@@ -49,6 +49,7 @@ class ReviewListAPIView(ListAPIView):
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
     permission_classes = (AllowAny,)
+    pagination_class = AdPagination
 
 
 class ReviewCreateAPIView(CreateAPIView):

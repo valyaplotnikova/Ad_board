@@ -13,3 +13,9 @@ class IsAuthor(permissions.BasePermission):
         if obj.author == request.user:
             return True
         return False
+
+
+class IsSelf(permissions.BasePermission):
+    """ Проверяет права пользователя работать только со своим профилем. """
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj
